@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "APIG23.h"
+#include "APIG24.h"
 
 u32 NumeroDeVertices(Grafo G)
 {
@@ -18,9 +18,9 @@ u32 Delta(Grafo G)
     return G->delta;
 }
 
-u32 Nombre(u32 i, Grafo G)
+color Nombre(u32 i, Grafo G)
 {
-    return G->ids[i];
+    return G->colors[i];
 }
 
 u32 Grado(u32 i, Grafo G)

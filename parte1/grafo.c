@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "APIG23.h"
+#include "APIG24.h"
 #include "balanced_tree.h"
 #include <stdbool.h> 
 
@@ -48,15 +48,15 @@ static void fill_degs_and_delta(Grafo graph, u32 n) {
 }
 
 static u32 name_to_index(Grafo graph, u32 name) {
-  u32 *ids = graph->ids;
+  color *colors = graph->colors;
   u32 start_index = 0, end_index = graph->num_vertexs - 1;
   u32 middle = 0;
 
   while (start_index <= end_index) {
     middle = (start_index + end_index) / 2;
-    if (ids[middle] == name)
+    if (colors[middle] == name)
       return middle;
-    if (ids[middle] < name)
+    if (colors[middle] < name)
       start_index = middle + 1;
     else
       end_index = middle - 1;
@@ -92,11 +92,11 @@ Grafo ConstruirGrafo()
     graph->num_vertexs = n;
     graph->num_edges = m;
     graph->delta = 0;
-    graph->ids = calloc(n, sizeof(u32));
+    graph->colors = calloc(n, sizeof(u32));
     graph->edges = calloc(n, sizeof(list));
     graph->degs = calloc(n, sizeof(u32));
 
-    if((graph->ids == NULL)
+    if((graph->colors == NULL)
         | (graph->edges == NULL)
         | (graph->degs == NULL)){
       free(graph);
@@ -110,8 +110,8 @@ Grafo ConstruirGrafo()
         return NULL;
     }
     
-    // Fill graph->ids
-    keys_to_array_inorder(tree, graph->ids);
+    // Fill graph->colors
+    keys_to_array_inorder(tree, graph->colors);
     // Fill graph->edges
     data_to_array_inorder(tree, graph->edges); 
     
@@ -127,15 +127,14 @@ Grafo ConstruirGrafo()
     return graph;
 }
 
-
 void DestruirGrafo(Grafo G)
 {
     if(G == NULL)
         return;
     if(G->degs != NULL)
         free(G->degs);
-    if(G->ids != NULL)
-        free(G->ids);
+    if(G->colors != NULL)
+        free(G->colors);
     if(G->edges != NULL){
         for(unsigned int i = 0; i < G->num_vertexs; ++i){
             destroy(G->edges[i]);
@@ -144,7 +143,6 @@ void DestruirGrafo(Grafo G)
     }
     free(G);
 }
-
 
 u32 NumeroDeVertices(Grafo G)
 {
@@ -163,7 +161,7 @@ u32 Delta(Grafo G)
 
 u32 Nombre(u32 i, Grafo G)
 {
-    return G->ids[i];
+    return G->colors[i];
 }
 
 u32 Grado(u32 i, Grafo G)

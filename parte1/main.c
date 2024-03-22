@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "APIG23.h"
 #include <time.h>
+
+#include "APIG24.h"
 
 void printGrafo(Grafo G)
 {
     for (unsigned int i = 0; i < G->num_vertexs; ++i)
     {
-        printf("[%u:%u] -> ", i, G->ids[i]);
+        printf("[%u:%u] -> ", i, G->colors[i]);
         list_dump(G->edges[i]);
         printf("\n");
     }
@@ -35,7 +36,6 @@ int main(void)
     span = (final - inicio) / CLOCKS_PER_SEC;
 
     printf("Tardaste %lu seg en cargar el grafo\n", span);
-
     printf(span <= 30 ? "tiempo aceptable\n" : "fracaso, tardo banda\n");
 
     DestruirGrafo(G);

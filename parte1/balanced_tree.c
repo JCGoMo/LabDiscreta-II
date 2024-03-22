@@ -194,5 +194,3 @@ balanced_tree destroy_tree(balanced_tree tree){
     }
     return NULL;
 }
-
-

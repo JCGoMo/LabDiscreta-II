@@ -17,7 +17,6 @@ list empty_list();
 list addl(list_elem e, list l);
 /* Devuelve la lista resultante de agregar el elemento e por la izquierda a la lista l
  *
- *
  */
 
 void destroy(list l);
@@ -33,8 +32,8 @@ bool is_empty(list l);
  */
 
 list addr(list_elem e, list l);
-/* Devuelve la lista con los elementos de l
- * añadiendo al elemento e al final de la lista
+/* Devuelve la lista con los elementos de l añadiendo al elemento e al final de la lista
+ *
  */
 
 unsigned int length(list l);
@@ -44,11 +43,8 @@ unsigned int length(list l);
 
 list_elem list_index(list l, unsigned int n);
 /* PRE: length(l)>n
- * Devuelve el n-ésimo elemento de la lista l
- * comenzando desde cero.
+ * Devuelve el n-ésimo elemento de la lista l comenzando desde cero
  */
-
-// extra
 
 void list_dump(list l);
 
