@@ -8,7 +8,7 @@ void printGrafo(Grafo G)
 {
     for (unsigned int i = 0; i < G->num_vertexs; ++i)
     {
-        printf("[%u:%u] -> ", i, G->colors[i]);
+        printf("[%u] -> ", i);
         list_dump(G->edges[i]);
         printf("\n");
     }
@@ -24,13 +24,16 @@ int main(void)
     inicio = clock(); // Tiempo de cpu usado por proceso
 
     Grafo G = ConstruirGrafo();
-
     final = clock();
 
     if (G != NULL)
     {
         // printGrafo(G);
         printf("se obtuvo: %u vertices y %u lados\n", NumeroDeVertices(G), NumeroDeLados(G));
+    }
+    else
+    {
+        printf("G es null mi loco\n");
     }
 
     span = (final - inicio) / CLOCKS_PER_SEC;

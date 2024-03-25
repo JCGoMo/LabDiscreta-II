@@ -66,5 +66,5 @@ void list_dump(list l)
     {
         printf("%u,", l->elems[i]);
     }
-    printf("%u]", l->elems[l->size - 1]);
+    printf("%u]\n", l->elems[l->size - 1]);
 }

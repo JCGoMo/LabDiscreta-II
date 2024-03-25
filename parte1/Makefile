@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pedantic -std=c99 -O3
-SOURCES = grafo.c list.c balanced_tree.c main.c
+CFLAGS = -Wall  -Wextra -g -pedantic -std=c99 -O3
+SOURCES = grafo.c list.c balanced_tree.c main.c adjlist.c
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = ejecutable
 
@@ -14,3 +14,4 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@ 
 clean:
 	$(RM) $(OBJECTS) $(TARGET)
+# -Werror
