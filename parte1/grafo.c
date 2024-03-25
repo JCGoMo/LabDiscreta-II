@@ -5,7 +5,19 @@
 #include "balanced_tree.h"
 #include <stdbool.h> 
 
-#define MAX_U32 0xFFFFFFFF
+#define MAX_U32 0xFFFFFFFF // 2^32 - 1
+
+/*
+ToDo:
+* Guardas con prints para errores y deteccion de problemas de entrada
+* Poder procesar un segundo grafo en el mismo archivo despues de haber leido el primero
+* Revisar: "p edgee n m, en cuyo caso tambien deben devolver NULL" (Mal formato en el archivo)
+
+* Revisar y borrar funciones que no se usen. Revisar comentarios. Modificar cosas por si usan detector de copypaste
+* Comentar funcionamiento de cada función
+*/
+
+
 
 static int load_nums(u32 *n, u32 *m) {
   unsigned int res = 0;
@@ -181,38 +193,60 @@ void DestruirGrafo(Grafo G)
     }
     free(G);
 }
-
+// Dado un grafo, devuelve la cantidad de vertices del grafo
 u32 NumeroDeVertices(Grafo G)
 {
     return G->num_vertexs;
 }
-
+// Dado un grafo, devuelve la cantidad de lados del grafo
 u32 NumeroDeLados(Grafo G)
 {
     return G->num_edges;
 }
-
+// Dado un grafo, devuelve el delta del grafo
 u32 Delta(Grafo G)
 {
     return G->delta;
 }
-
-u32 Nombre(u32 i, Grafo G)
-{
-    return G->colors[i];
-}
-
+// Dado un vertice i, devuelve la cantidad de vecinos que tiene
 u32 Grado(u32 i, Grafo G)
 {
     return G->degs[i];
 }
-
-u32 IndiceVecino(u32 j, u32 i, Grafo G)
-{
-    u32 res = MAX_U32;
-    if (i < G->num_vertexs && j < G->degs[i])
-    {
-        res = list_index(G->edges[i], j);
+// Dado un grafo, extrae los colores de los vertices y los guarda en un arreglo
+void ExtraerColores(Grafo G, color* Color){
+    for(unsigned int i = 0; i < G->num_vertexs; ++i){
+        Color[i] = G->colors[i];
     }
-    return res;
+}
+
+// Dado un arreglo de colores, importa los colores al grafo
+void ImportarColores(color* Color, Grafo G) {
+    for(unsigned int i = 0; i < G->num_vertexs; ++i){
+        G->colors[i] = Color[i];
+    }
+}
+// Pinta el vertice i con el color x
+void AsignarColor(color x, u32 i, Grafo G) {
+    if (i < G->num_vertexs) {
+        G->colors[i] = x;
+    }
+}
+// Dado un vertice i, devuelve el color del vertice
+color Color(u32 i,Grafo G) {
+    if (i < G->num_vertexs) {
+        return G->colors[i];
+    } else {
+        return MAX_U32; 
+    }
+}
+// Dado un vertice i y un vecino j, devuelve el indice del vecino en la lista de vecinos de i
+//El indice del j-esimo vecino de i en la lista de vecinos de i
+u32 Vecino(u32 j,u32 i,Grafo G){
+    if (i < G->num_vertexs && j < G->degs[i]) {
+      return list_index(G->edges[i], j);
+    }
+    else{
+      return MAX_U32;
+    }
 }
