@@ -20,6 +20,7 @@ static int load_nums(u32 *n, u32 *m) {
   return 0;
 }
 
+/*
 static balanced_tree save_in_tree(u32 m) {
   u32 v1, v2;
   char buff[100];
@@ -36,6 +37,8 @@ static balanced_tree save_in_tree(u32 m) {
   }
   return tree;
 }
+*/
+
 
 static void fill_degs_and_delta(Grafo graph, u32 n) {
   for (unsigned int i = 0; i < n; ++i) {
@@ -46,6 +49,22 @@ static void fill_degs_and_delta(Grafo graph, u32 n) {
     }
   }
 }
+
+
+int fill_edges(list *edges, u32 amount_of_edges) {
+  u32 v1, v2;
+  char buff[100];
+  for (unsigned int line = 0; (fgets(buff, 100, stdin) != NULL) && line<amount_of_edges; ++line) {
+    if (sscanf(buff, "e %u %u", &v1, &v2) != 2) {
+      return -1;
+    }
+    edges[v1] = addr(v2, edges[v1]);
+    edges[v2] = addr(v1, edges[v2]);
+  }
+  return 0;
+}
+
+/*
 
 static u32 name_to_index(Grafo graph, u32 name) {
   color *colors = graph->colors;
@@ -64,6 +83,7 @@ static u32 name_to_index(Grafo graph, u32 name) {
   return MAX_U32;
 }
 
+
 static list names_to_indexs(Grafo graph, list names_list) {
   u32 list_len = length(names_list);
   list index_list = empty_list();
@@ -75,9 +95,10 @@ static list names_to_indexs(Grafo graph, list names_list) {
   }
   return index_list;
 }
+*/
 
 Grafo ConstruirGrafo()
-{   // Parse n,m from file
+{   // Parse n, m from file
     u32 n = 0, m = 0;
     int res = load_nums(&n, &m);
     if(res == -1){
@@ -92,7 +113,7 @@ Grafo ConstruirGrafo()
     graph->num_vertexs = n;
     graph->num_edges = m;
     graph->delta = 0;
-    graph->colors = calloc(n, sizeof(u32));
+    graph->colors = calloc(n, sizeof(color));
     graph->edges = calloc(n, sizeof(list));
     graph->degs = calloc(n, sizeof(u32));
 
@@ -104,25 +125,42 @@ Grafo ConstruirGrafo()
     }
 
     // Parse data from file, save in AVL tree data struct
+    
+    for (unsigned int i = 0; i < n; ++i) {
+      graph->edges[i] = empty_list();
+    }
+    
+    int error = fill_edges(graph->edges, m);
+    if (error != 0) {
+      DestruirGrafo(graph);
+      return NULL;
+    }
+    
+    
+    /*
     balanced_tree tree = save_in_tree(m);
     if(tree == NULL || num_of_nodes(tree) > n){
         DestruirGrafo(graph);
         return NULL;
     }
-    
     // Fill graph->colors
     keys_to_array_inorder(tree, graph->colors);
     // Fill graph->edges
     data_to_array_inorder(tree, graph->edges); 
-    
+
     for(unsigned int i = 0; i < n; ++i){
-        graph->edges[i] = names_to_indexs(graph, graph->edges[i]);
-    }
+            graph->edges[i] = names_to_indexs(graph, graph->edges[i]);
+        }
+
+    */
+    
+    
+    
     
     // Compute degree for each vertex, calculate delta
     fill_degs_and_delta(graph, n);
     
-    tree = destroy_tree(tree);
+    //tree = destroy_tree(tree);
 
     return graph;
 }
