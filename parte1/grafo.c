@@ -2,125 +2,60 @@
 #include <stdio.h>
 
 #include "APIG24.h"
-#include "balanced_tree.h"
-#include <stdbool.h> 
+#include <stdbool.h>
 
 #define MAX_U32 0xFFFFFFFF // 2^32 - 1
 
-/*
-ToDo:
-* Guardas con prints para errores y deteccion de problemas de entrada
-* Poder procesar un segundo grafo en el mismo archivo despues de haber leido el primero
-* Revisar: "p edgee n m, en cuyo caso tambien deben devolver NULL" (Mal formato en el archivo)
-
-* Revisar y borrar funciones que no se usen. Revisar comentarios. Modificar cosas por si usan detector de copypaste
-* Comentar funcionamiento de cada función
-*/
-
-
-
+// Carga los numeros n y m del archivo
 static int load_nums(u32 *n, u32 *m) {
-  unsigned int res = 0;
-  char buff[100];
-
-  while (res != 2) {
-    if (fgets(buff, 100, stdin) == NULL) {
-      return -1;
+    unsigned int res = 0;
+    char buff[1000];
+    while (res != 2) {
+        if (fgets(buff, 1000, stdin) == NULL) {
+            return -1;
+        }
+        res = sscanf(buff, "p edge %u %u", n, m);
     }
-    res = sscanf(buff, "p edge %u %u", n, m);
-  }
-  return 0;
+    return 0;
 }
 
-/*
-static balanced_tree save_in_tree(u32 m) {
-  u32 v1, v2;
-  char buff[100];
-  balanced_tree tree = NULL;
-
-  for (unsigned int line = 0; line < m; ++line) {
-    if (fgets(buff, 100, stdin) == NULL ||
-        sscanf(buff, "e %u %u", &v1, &v2) != 2) {
-      destroy_tree(tree);
-      return NULL;
-    }
-    tree = insert(tree, v1, v2);
-    tree = insert(tree, v2, v1);
-  }
-  return tree;
-}
-*/
-
-
+// Obtenemos el grado de cada vertice y el delta del grafo
 static void fill_degs_and_delta(Grafo graph, u32 n) {
-  for (unsigned int i = 0; i < n; ++i) {
-    graph->degs[i] = length(graph->edges[i]);
+    for (unsigned int i = 0; i < n; ++i) {
+        graph->degs[i] = length(graph->edges[i]);
 
-    if (graph->degs[i] > graph->delta) {
-      graph->delta = graph->degs[i];
+        if (graph->degs[i] > graph->delta) {
+            graph->delta = graph->degs[i];
+        }
     }
-  }
 }
 
-
+// Carga la lista de vecinos de cada vertice
 int fill_edges(list *edges, u32 amount_of_edges) {
-  u32 v1, v2;
-  char buff[100];
-  for (unsigned int line = 0; (fgets(buff, 100, stdin) != NULL) && line<amount_of_edges; ++line) {
-    if (sscanf(buff, "e %u %u", &v1, &v2) != 2) {
-      return -1;
+    u32 v1, v2;
+    char buff[1000];
+    for (unsigned int line = 0; line<amount_of_edges && (fgets(buff, 1000, stdin) != NULL); ++line) {
+        if (sscanf(buff, "e %u %u", &v1, &v2) != 2) {
+            return -1;
+        }
+        edges[v1] = addr(v2, edges[v1]);
+        edges[v2] = addr(v1, edges[v2]);
     }
-    edges[v1] = addr(v2, edges[v1]);
-    edges[v2] = addr(v1, edges[v2]);
-  }
-  return 0;
+    return 0;
 }
-
-/*
-
-static u32 name_to_index(Grafo graph, u32 name) {
-  color *colors = graph->colors;
-  u32 start_index = 0, end_index = graph->num_vertexs - 1;
-  u32 middle = 0;
-
-  while (start_index <= end_index) {
-    middle = (start_index + end_index) / 2;
-    if (colors[middle] == name)
-      return middle;
-    if (colors[middle] < name)
-      start_index = middle + 1;
-    else
-      end_index = middle - 1;
-  }
-  return MAX_U32;
-}
-
-
-static list names_to_indexs(Grafo graph, list names_list) {
-  u32 list_len = length(names_list);
-  list index_list = empty_list();
-  u32 index = 0;
-
-  for (unsigned int i = 0; i < list_len; ++i) {
-    index = name_to_index(graph, list_index(names_list, i));
-    index_list = addr(index, index_list);
-  }
-  return index_list;
-}
-*/
 
 Grafo ConstruirGrafo()
-{   // Parse n, m from file
+{   // Obtenemos n, m del archivo
     u32 n = 0, m = 0;
     int res = load_nums(&n, &m);
     if(res == -1){
         return NULL;
     }
     
-    // Initialize graph struct
+    // Inicializamos la estructura del grafo
     Grafo graph = malloc(sizeof(GrafoSt));
     if(graph == NULL){
-      return NULL;
+        return NULL;
     }
     graph->num_vertexs = n;
     graph->num_edges = m;
@@ -132,51 +67,33 @@ Grafo ConstruirGrafo()
     if((graph->colors == NULL)
         | (graph->edges == NULL)
         | (graph->degs == NULL)){
-      free(graph);
-      return NULL;
+        free(graph);
+        return NULL;
     }
-
-    // Parse data from file, save in AVL tree data struct
-    
+ 
+    // Crea la lista de vecinos de cada vertice y 
     for (unsigned int i = 0; i < n; ++i) {
-      graph->edges[i] = empty_list();
+        graph->edges[i] = empty_list();
     }
     
+    // Llena la lista de vecinos de cada vertice
     int error = fill_edges(graph->edges, m);
     if (error != 0) {
-      DestruirGrafo(graph);
-      return NULL;
-    }
-    
-    
-    /*
-    balanced_tree tree = save_in_tree(m);
-    if(tree == NULL || num_of_nodes(tree) > n){
         DestruirGrafo(graph);
         return NULL;
     }
-    // Fill graph->colors
-    keys_to_array_inorder(tree, graph->colors);
-    // Fill graph->edges
-    data_to_array_inorder(tree, graph->edges); 
-
-    for(unsigned int i = 0; i < n; ++i){
-            graph->edges[i] = names_to_indexs(graph, graph->edges[i]);
-        }
-
-    */
     
-    
-    
-    
-    // Compute degree for each vertex, calculate delta
+    // Llena los grados de cada vertice y el delta
     fill_degs_and_delta(graph, n);
-    
-    //tree = destroy_tree(tree);
+    if(graph->delta == 0){
+        DestruirGrafo(graph);
+        return graph;
+    }
 
     return graph;
 }
 
+// Dado un grafo, libera la memoria utilizada por el grafo
 void DestruirGrafo(Grafo G)
 {
     if(G == NULL)
@@ -192,27 +109,33 @@ void DestruirGrafo(Grafo G)
         free(G->edges);
     }
     free(G);
+    G = NULL;
 }
+
 // Dado un grafo, devuelve la cantidad de vertices del grafo
 u32 NumeroDeVertices(Grafo G)
 {
     return G->num_vertexs;
 }
+
 // Dado un grafo, devuelve la cantidad de lados del grafo
 u32 NumeroDeLados(Grafo G)
 {
     return G->num_edges;
 }
+
 // Dado un grafo, devuelve el delta del grafo
 u32 Delta(Grafo G)
 {
     return G->delta;
 }
+
 // Dado un vertice i, devuelve la cantidad de vecinos que tiene
 u32 Grado(u32 i, Grafo G)
 {
     return G->degs[i];
 }
+
 // Dado un grafo, extrae los colores de los vertices y los guarda en un arreglo
 void ExtraerColores(Grafo G, color* Color){
     for(unsigned int i = 0; i < G->num_vertexs; ++i){
@@ -226,27 +149,30 @@ void ImportarColores(color* Color, Grafo G) {
         G->colors[i] = Color[i];
     }
 }
+
 // Pinta el vertice i con el color x
 void AsignarColor(color x, u32 i, Grafo G) {
     if (i < G->num_vertexs) {
         G->colors[i] = x;
     }
 }
+
 // Dado un vertice i, devuelve el color del vertice
-color Color(u32 i,Grafo G) {
+color Color(u32 i, Grafo G) {
     if (i < G->num_vertexs) {
         return G->colors[i];
     } else {
         return MAX_U32; 
     }
 }
+
 // Dado un vertice i y un vecino j, devuelve el indice del vecino en la lista de vecinos de i
-//El indice del j-esimo vecino de i en la lista de vecinos de i
-u32 Vecino(u32 j,u32 i,Grafo G){
+// El indice del j-esimo vecino de i en la lista de vecinos de i
+u32 Vecino(u32 j,u32 i, Grafo G){
     if (i < G->num_vertexs && j < G->degs[i]) {
-      return list_index(G->edges[i], j);
+        return list_index(G->edges[i], j);      // Comenzando desde 0, si no, hacer +1
     }
     else{
-      return MAX_U32;
+        return MAX_U32;
     }
 }

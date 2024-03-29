@@ -21,6 +21,7 @@ list empty_list()
     l->capacity = 50;
     return l;
 }
+
 list addr(list_elem e, list l)
 {
     if (l->size == l->capacity)
@@ -64,7 +65,7 @@ void list_dump(list l)
     printf("[");
     for (unsigned int i = 0; i < l->size - 1; ++i)
     {
-        printf("%u,", l->elems[i]);
+        printf("%u, ", l->elems[i]);
     }
     printf("%u]", l->elems[l->size - 1]);
 }
