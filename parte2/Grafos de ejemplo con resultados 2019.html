@@ -1,0 +1,168 @@
+
+<!-- saved from url=(0077)https://www.famaf.unc.edu.ar/~penazzi/DisII2016/2019GrafosDeEjemplos2019.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body>
+<h1>Grafos de Ejemplo</h1>
+<h1>=====Grafos de testeo obligatorio=====</h1>
+
+
+<h2> Los siguientes grafos muestran variabilidad en los coloreos de Greedy con los reordenamientos.</h2>
+Observación obvia: Greedy con un orden dado es determinístico y OrdenNatural también. Asi que Greedy con OrdenNatural les debe dar igual que lo que se dice acá. Por otro lado, WelshPowell y los RMBCs no son determísticos según el proyecto (no especificamos cómo se ordenan vertices con el mismo grado o el mismo color) asi que les puede dar distinto.
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/bxb15_22_10">Grafo relativamente chico, Deberia dar mas colores con WelshPowell que con otros reordenes.(esta construido para que WelshPowell ande particularmente mal)</a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/Corrdeotrapagina/q10.corr">queen10.Numero de vertices=100. Numero de lados=1470.</a><br>
+Greedy en OrdenNatural:16 colores<br>
+Greedy en WelshPowell:17 colores<br>
+100SwitchVertices lo baja a 14.<br>
+ RMBCs lo bajan a 13 y luego a 12<br>
+X(G) es 10.
+</p>
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/Corrdeotrapagina/q13.corr">queen13.Numero de vertices=169. Numero de lados=3328 </a>
+<br>
+Greedy en OrdenNatural:21 colores<br>
+Greedy en WelshPowell:23 colores<br>
+100 SwitchVertices lo baja a 19 y con los RMBCs se lo puede bajar a 17. X(G)=13.
+</p>
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/school1.col"> School1 de la pagina de DIMACS. Numero de vertices=385. Numero de lados=19095</a> <br>
+Greedy en OrdenNatural:42 colores<br>
+Greedy en WelshPowell:34 colores<br>
+100 SwitchVertices lo baja a: 32<br>
+Con 426 RMBCs logro bajarlo a 14,pero incluso con 3000 RMBC no parece mejorar.</p>
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/HSR.txt"> Grafo con una trampa chiquita para testear un error especifico.</a></p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/CBQsc100_200_11_1517.tar.gz">Numero de vertices=1010. Numero de lados=60980</a><br>
+Greedy en OrdenNatural:42 colores<br>
+Greedy en WelshPowell:34 colores<br>
+Con SwitchVertices y RMBCS se lo puede bajar a 14 colores.<br>
+X(G) es mayor o igual que 11.</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/CBQsv10_22_61.txt.tar.gz">Numero de vertices=3779. Numero de lados=371357</a><br>
+reedy en OrdenNatural:77 colores<br>
+Greedy en WelshPowell:97 colores<br>
+Lo puedo bajar con SwitchVertices y RMBCs a 72 colores, pero X(G)=61.</p>
+
+<h2> Los siguientes grafos son completos. Deben obtener siempre esa cantidad de colores con Greedy en cualquier orden</h2>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/KC">K100: X(G)=100</a> 
+</p>
+
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/KD">K500: X(G)=500 </a> 
+</p>
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/KM">K1000: X(G)=1000</a> 
+</p>
+
+
+
+<h2> Grafos grandes para testear velocidad y uso de memoria.</h2>
+No es necesario que ustedes obtengan estos mismos tiempos pero si deben poder hacer OrdenNatural, WelshPowell, 100 SwitchVertices mas 1000 RMBCs diversos, con Greedy luego de cada orden, en 15 minutos para cada uno de ellos. (los tiempos que se detallan abajo son con 3000 RMBCs)
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/Gf12345_12111222_457_15.gz">Numero de vertices=221651. Numero de lados=12528006</a><br>
+Greedy en OrdenNatural:600 colores <br>
+Greedy en WelshPowell:581 colores<br>
+100 SwitchVertices a partir de WP no logra bajar ese número.<br>
+3000 RMBCs lo baja a 523.<br>
+Tiempo total:6m4.944s
+</p>
+
+
+<p> <a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/BxB1100_999_54_2017.tar.gz">Numero de vertices=2210104. Numero de lados=8807410</a><br>
+Greedy en OrdenNatural:5 colores <br>
+Greedy en WelshPowell:2099 colores.<br>
+Con SwitchVertices a partir de OrdenNatural y algunos RMBCs se puede bajar el coloreo a 4 colores.<br>
+Tiempo total para 3102 Greedys: 6m15.192s</p>
+
+<p> <a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/Octo.txt.tar.gz">Numero de vertices=3080. Numero de lados=4303060</a><br>
+Greedy en OrdenNatural:339 colores<br>
+Greedy en WelshPowell:264 colores<br>
+100 SwitchVertices: 262<br>
+642 RMBCs lo disminuye a 112.<br>
+Tiempo total para 3102 Greedys:1m39.539s
+
+</p><p> <a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/CBQsv1000_77_150.txt.tar.gz">Numero de vertices=23658. Numero de lados=5586907
+</a><br>
+Greedy en OrdenNatural:173 colores<br>
+Greedy en WelshPowell:239 colores<br>
+Luego de 100 SwitchVertices: 172<br>
+Luego de 33 RMBCs :167<br>
+y luego de un total de 3000 RMBCs eso es lo mejor.<br>
+tiempo total 2m41.231s
+
+
+</p><p>
+<a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/GRD99704280.tar.gz">GRAFO BIPARTITO con 2135792 vertices y 2162836 lados.</a><br>
+Greedy en OrdenNatural:6 colores<br>
+Greedy en WelshPowell:5 colores<br>
+Switch Vertices mas RMBCs lo bajan a 4.<br>
+Tiempo total para 3102 Greedys:3m41.215s
+</p>
+
+
+<h2> Otros Grafos Bipartitos </h2>
+<li> Estos grafos son bipartitos, pero Greedy en OrdenNatural no da 2.
+<p>
+<a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/GRD22154753987.tar.gz">5576 vertices, 6748 lados</a>
+</p>
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/DG100.txt">
+Numero de vertices=20002. Numero de lados=49601</a>
+Greedy en OrdenNatural:6 colores</p>
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/AlgunosGrafos2019/PG64.txt">Numero de vertices=20482. Numero de lados=56705</a>
+Greedy en OrdenNatural:6 colores</p>
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/GRD505041100.tar.gz">casi 1 millón de vértices y lados.</a></p>
+
+
+<h1>====Fin Grafos Testeo Obligatorio=====</h1>
+<h1>Otros grafos, no de testeo obligatorio.</h1>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/R22_99_15">Un grafo aleatorio con 22 vertices y 99 lados </a> 
+</p>
+
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/lux2">X(G)=25</a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/lux3">X(G)=22</a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/lux1">X(G)=131</a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/lux4.gz">X(G)=1500</a> (comprimido)
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/bxb777_999_12.gz">Grafo comprimido, grande. Welsh Powell va a dar mucho mas del X(G)</a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/R1789_875431_10.gz">Un grafo aleatorio con 1789 vertices y 875431 lados. Comprimido </a> 
+</p>
+
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/DisII2016/R1999999_10123123_1.gz">Un grafo aleatorio con 1999999 vertices y 10123123 lados. Comprimido </a> 
+</p>
+
+
+</li><li> Los siguientes dos grafos hacian que un grupo les diera distinto bipartito si lo hacian antes o despues de WelshPowell.
+<p><a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/Cne140_4"> uno chico </a> </p>
+<p> <a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/C1599_1777"> otro un poco mas grande</a> 
+</p>
+
+<p> Estos tres grafos todos dan WP en exceso del coloreo final que se puede obtener. (en los tres casos se puede colorear con 5 colores)<br>
+.</p>
+</li><li>
+<a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/A1H75_18">410 vértices, 23614 lados, WP da 94 colores,</a>
+</li><li>
+<a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/A7H4H_18.tar.gz">2810 vértices, 1005214 lados, WP da 634 colores. </a>
+</li><li>
+<a href="https://www.famaf.unc.edu.ar/~penazzi/Discreta2018/A_1515153016_18.tar.gz">6070 vértices, 4645004 lados, WP da 1368 colores,  </a>
+
+
+
+
+</li></body></html>
