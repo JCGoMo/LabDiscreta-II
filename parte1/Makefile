@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pedantic -std=c99 -O3 # Para testear grafos chicos: -DNDEBUG -fsanitize=address,undefined
-SOURCES = grafo.c list.c balanced_tree.c main.c
+CFLAGS = -g -Wall -Werror -Wextra -pedantic -std=c99 -O3 -DNDEBUG -fsanitize=address,undefined
+SOURCES = grafo.c list.c main.c
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = ejecutable
 
