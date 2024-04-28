@@ -37,7 +37,7 @@ color encontrarMenorFaltante(color coloresVecinos[], color * maxColor, u32 delta
         (*maxColor)++;
         menorFaltante = *maxColor;
     }
-
+    
     return menorFaltante;
 }
 
@@ -58,7 +58,38 @@ void pintarVertice(Grafo G, u32 vertice, color * maxColor){
 }
 
 // Algoritmo Greedy para colorear un grafo
+
+/*
+Esta funci ́on asume que Orden apunta a un sector de memoria con n lugares. Uds no necesitan verificar esto.
+Pero, lo primero que debe hacer esta funci ́on es verificar que Orden provee efectivamente un orden de los elementos
+{0, 1, ..., n −1}. Es decir, que Orden induce una biyecci ́on en {0, 1, ..., n −1}.
+*/
+
+bool verificaOrden(u32 *Orden, u32 n) {
+    // PRE: Orden apunta a un sector de memoria con n lugares
+    bool *verificado = calloc(n, sizeof(bool));
+    if (verificado == NULL) {
+        return false;
+    }
+
+    //printf("Verificando orden\n");
+    for (u32 i = 1; i <= n; ++i) {
+        //printf("Ver. Or. - Dentro for \n");
+        if (Orden[i-1] >= n || verificado[Orden[i-1]]) {
+            free(verificado);
+            printf("Orden Invalido\n");
+            return false;
+        }
+        //printf("Ver. Or. - Mid for \n");
+        verificado[Orden[i-1]] = true;
+        //printf("Ver. Or. - Final for \n");
+    }
+
+    free(verificado);
+    return true;
+}
 u32 Greedy(Grafo G,u32* Orden){
+    printf("Entro a greedy\n");
     u32 numVertices = NumeroDeVertices(G);
     u32 resultado = 0;
     color * maxColor = malloc(sizeof(color));
@@ -67,6 +98,12 @@ u32 Greedy(Grafo G,u32* Orden){
     if (maxColor == NULL) {
         return MAX_U32;
     }
+    //printf("Por verificar orden\n");
+    if (!verificaOrden(Orden, numVertices)) {
+        free(maxColor);
+        return MAX_U32;
+    }
+    //printf("Orden verificado\n");
     for (u32 i = 0; i < numVertices; i++) {
         printf("Inicio pintado de vertice %u\n", i);
         pintarVertice(G, Orden[i], maxColor);
@@ -75,23 +112,4 @@ u32 Greedy(Grafo G,u32* Orden){
     resultado = *maxColor;
     free(maxColor);
     return resultado;
-}
-
-int main() {
-    
-    Grafo G = ConstruirGrafo();
-    if(G == NULL){
-        return 1;
-    }
-
-    u32 orden[NumeroDeVertices(G)];
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        orden[i] = i;
-    }
-    Greedy(G, orden);
-
-    for(u32 i = 0; i < NumeroDeVertices(G); i++){
-        printf("Color del vertice %d: %d\n", i, Color(i, G));
-    }
-    return 0;
 }
