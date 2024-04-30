@@ -7,16 +7,23 @@
 // Encuentra el menor color faltante en un arreglo de colores
 color encontrarMenorFaltante(color coloresVecinos[], color * maxColor, u32 deltaVertice) {
     bool presentes[(*maxColor)+1];     // presentes[0] se lo ignora para que los colores empiecen en 1 y entender mas facil
-    // [0,1,2,3] maxColor = 3
-
-    for (u32 i = 0; i <= (*maxColor)+1; i++) {
+    // [F,F,F,F] maxColor = 3
+   // printf("Colores vecinos de %u :", vertice);
+    for (u32 i = 0; i < (*maxColor)+1; i++) {
         presentes[i] = false; // Inicializar todos los números como no presentes
+        
     }
+    // printf("Colores vecinos:");
+    // for(u32 i = 0; i < deltaVertice; i++){
+    //     printf(" %u ", coloresVecinos[i]);
+    // }
+    // printf("\n");
+
     // [false, false, false]
-    
+    //printf("\n");
     // Marcar como presentes los números que están en el arreglo
     for (u32 i = 0; i < deltaVertice; i++) {
-        if (coloresVecinos[i] > 0 && coloresVecinos[i] <= (*maxColor)+1) {
+        if (coloresVecinos[i] > 0 && coloresVecinos[i] < (*maxColor)+1) {
             presentes[coloresVecinos[i]] = true;
         }
     }
@@ -37,7 +44,8 @@ color encontrarMenorFaltante(color coloresVecinos[], color * maxColor, u32 delta
         (*maxColor)++;
         menorFaltante = *maxColor;
     }
-    
+    //printf("Menor faltante: %u\n", menorFaltante);
+
     return menorFaltante;
 }
 
@@ -52,7 +60,7 @@ void pintarVertice(Grafo G, u32 vertice, color * maxColor){
         colores_vecinos[i] = Color(vecino, G);
     }
     
-    printf("Colores vecinos de %u: ", vertice);
+    //printf("Colores vecinos de %u: ", vertice);
     color next_color = encontrarMenorFaltante(colores_vecinos, maxColor, deltaVertice);
     AsignarColor(next_color, vertice, G);
 }
@@ -88,8 +96,9 @@ bool verificaOrden(u32 *Orden, u32 n) {
     free(verificado);
     return true;
 }
+
 u32 Greedy(Grafo G,u32* Orden){
-    printf("Entro a greedy\n");
+    //printf("Entro a greedy\n");
     u32 numVertices = NumeroDeVertices(G);
     u32 resultado = 0;
     color * maxColor = malloc(sizeof(color));
@@ -105,7 +114,7 @@ u32 Greedy(Grafo G,u32* Orden){
     }
     //printf("Orden verificado\n");
     for (u32 i = 0; i < numVertices; i++) {
-        printf("Inicio pintado de vertice %u\n", i);
+        //printf("Inicio pintado de vertice %u\n", i);
         pintarVertice(G, Orden[i], maxColor);
     }
     
