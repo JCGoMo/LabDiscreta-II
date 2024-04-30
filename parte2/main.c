@@ -4,12 +4,40 @@
 
 #include "API2024Parte2.h"
 
-//! ToDo: Definir el ordenamiento para cada caso
+// Todo asumiendo que los vertices van del 0 al n
+// Revisar, testear
 
 typedef struct {
     color coloreo[5];
     u32 cantidadColores[5];
 } ColoreoFinal;
+
+typedef struct {
+    u32 numeroVertice;
+    u32 grado;
+} VerticeGrado;
+
+
+void DulkatOk (Grafo G, u32 *orden) {
+    if (GulDukat(G, orden) == '1') {
+        printf("Error en GulDukat\n");
+        return 1;
+    }
+}
+
+void GarakOk (Grafo G, u32 *orden) {
+    if (ElimGarak(G, orden) == '1') {
+        printf("Error en ElimGarak\n");
+        return 1;
+    }
+}
+
+void GreedyOk (Grafo G, u32 *orden) {
+    if (Greedy(G, orden) == MAX_U32){
+        printf("Error en Greedy orden natural\n");
+        return 1;
+    }
+}
 
 void resetearColoreo(Grafo G){
     for(u32 i = 0; i < NumeroDeVertices(G); i++){
@@ -19,32 +47,27 @@ void resetearColoreo(Grafo G){
 
 void iteracionColoreos(Grafo G, u32 *orden, color *coloreosOrdenamientos[5], int j, ColoreoFinal coloreosFinales) {
     for (int i = 0; i < 100; i = i+2) {
-        if (GulDukat(G, orden) == '1') {
-            printf("Error en GulDukat\n");
-            return 1;
-        }
+        DulkatOk(G, orden);
         resetearColoreo(G);
-        if (Greedy(G, orden) == MAX_U32){
-            printf("Error en Greedy orden natural\n");
-            return 1;
-        }
+        GreedyOk(G, orden);
         ExtraerColores(G, coloreosOrdenamientos[j][i]);
-        printf("Cantidad de colores GulDukat: %u\n", Delta(G));
+        // printf("Delta parcial del coloreo Dulkat n %d del ordenamiento %d: %u\n", i, j, Delta(G));
 
-        if (ElimGarak(G, orden) == '1') {
-            printf("Error en ElimGarak\n");
-            return 1;
-        }
+        GarakOk(G, orden);
         resetearColoreo(G);
-        if (Greedy(G, orden) == MAX_U32){
-            printf("Error en Greedy orden natural\n");
-            return 1;
-        }
+        GreedyOk(G, orden);
         ExtraerColores(G, coloreosOrdenamientos[j][i+1]);
-        printf("Cantidad de colores Elim Garak: %u\n", Delta(G));
+        // printf("Delta parcial del coloreo Garak n %d del ordenamiento %d: %u\n", i, j, Delta(G));
     }
     ExtraerColores(G, coloreosFinales.coloreo[j]);
     coloreosFinales.cantidadColores[j] = Delta(G);
+    printf("Delta final del ordenamiento %d: %u\n", j, coloreosFinales.cantidadColores[j]);
+}
+
+u32 compararGrado(const void *a, const void *b) {
+    const VerticeGrado *verticeA = (const VerticeGrado *)a;
+    const VerticeGrado *verticeB = (const VerticeGrado *)b;
+    return verticeB->grado - verticeA->grado;
 }
 
 int main(void) {
@@ -57,71 +80,76 @@ int main(void) {
     if(G == NULL){
         return 1;
     }
+    u32 numVert = NumeroDeVertices(G);
 
     ColoreoFinal coloreosFinales;
     color *coloreosOrdenamientos[5];
     for (int i = 0; i < 5; i++) {
-        coloreosOrdenamientos[i] = malloc(NumeroDeVertices(G) * sizeof(color));
+        coloreosOrdenamientos[i] = malloc(numVert * sizeof(color));
         if(coloreosOrdenamientos[i] == NULL){
             return 1;
         }
     }
-    u32 *orden = malloc(NumeroDeVertices(G) * sizeof(u32));
+    u32 *orden = malloc(numVert * sizeof(u32));
     if(orden == NULL){
         return 1;
     }
 
     // Ordenamiento inicial: naturales
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
+    for (u32 i = 0; i < numVert; i++) {
         orden[i] = i;
     }
-    if (Greedy(G, orden) == MAX_U32){
-        printf("Error en Greedy orden natural\n");
-        return 1;
-    }
+    GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 0, coloreosFinales);
 
     // Ordenamiento inicial: naturales inverso
-    for (u32 i = NumeroDeVertices(G); i > 0; i--) {         // REVISAR
-        // orden[i] = // ToDo
+    for (u32 i = 0; i < numVert; i++) {                         
+        orden[i] = numVert - i - 1;
     }
-    if (Greedy(G, orden) == MAX_U32){
-        printf("Error en Greedy orden natural\n");
-        return 1;
-    }
+    GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 1, coloreosFinales);
 
     // Ordenamiento inicial: pares decreciente, luego impares creciente
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        // orden[i] = // ToDo
+    int index = 0;                                                          
+    for (u32 i = numVert - 1 - ((numVert-1) % 2 != 0); i >= 0; i = i-2) {               // Pares decreciente              
+        orden[index] = i;
+        index++;
     }
-    if (Greedy(G, orden) == MAX_U32){
-        printf("Error en Greedy orden natural\n");
-        return 1;
+    for (u32 i = 1; i < numVert - 1 - ((numVert-1) % 2 == 0); i = i+2) {                // Impares creciente
+        orden[index] = i;
+        index++;
     }
+    GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 2, coloreosFinales);
 
     // Ordenamiento inicial: grado decreciente
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        // orden[i] = // ToDo
+    VerticeGrado vertices[numVert];
+    for (u32 i = 0; i < numVert; i++) {
+        vertices[i].numeroVertice = i;
+        vertices[i].grado = Grado(i, G);
     }
-    if (Greedy(G, orden) == MAX_U32){
-        printf("Error en Greedy orden natural\n");
-        return 1;
+    qsort(vertices, numVert, sizeof(VerticeGrado), compararGrado);
+    for (u32 i = 0; i < numVert; i++) {
+        orden[i] = vertices[i].numeroVertice;
     }
+    GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 3, coloreosFinales);
     
-    // Ordenamiento inicial: ??? (a determinar por nosotros)
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        // orden[i] = // ToDo
+    // Ordenamiento inicial: 0, n, 1, n-1, 2, n-2, ...
+    u32 mitad = numVert / 2;
+    for (u32 i = 0; i < mitad; i++) {
+        orden[i] = i;
+        orden[i + 1] = numVert - i - 1;
     }
-    if (Greedy(G, orden) == MAX_U32){
-        printf("Error en Greedy orden natural\n");
-        return 1;
+    if (numVert % 2 != 0) {
+        orden[numVert - 1] = mitad;
     }
+    GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 4, coloreosFinales);
 
-    // Reordenamiento x500 con mejor coloreo
+                                                            // MANTENEMOS EL ULTIMO ORDENAMIENTO O LO RESETEAMOS?
+
+    // Reordenamiento y coloreo x500 random con mejor coloreo
     int mejorColoreo = 0;
     for (int i = 1; i < 5; i++) {
         if (coloreosFinales.cantidadColores[i] < coloreosFinales.cantidadColores[mejorColoreo]) {
@@ -129,39 +157,23 @@ int main(void) {
         }
     }
     ImportarColores(G, coloreosFinales.coloreo[mejorColoreo]);
-    printf("Delta del mejor coloreo: %u\n", coloreosFinales.cantidadColores[mejorColoreo]);
+    printf("Mejor delta de los 5 ordenamientos: %u\n", coloreosFinales.cantidadColores[mejorColoreo]);
 
     for (int i = 0 ; i < 500 ; i++) {
         srand(time(NULL));
         int random_number = rand() % 2;
 
         if (random_number) {
-            if (GulDukat(G, orden) == '1') {
-                printf("Error en GulDukat\n");
-                return 1;
-            }
-            resetearColoreo(G);
-            if (Greedy(G, orden) == MAX_U32){
-                printf("Error en Greedy orden natural\n");
-                return 1;
-            }
-            printf("Cantidad de colores GulDukat: %u\n", Delta(G));
+            DulkatOk(G, orden);
         }
         else {
-            if (ElimGarak(G, orden) == '1') {
-                printf("Error en ElimGarak\n");
-                return 1;
-            }
-            resetearColoreo(G);
-            if (Greedy(G, orden) == MAX_U32){
-                printf("Error en Greedy orden natural\n");
-                return 1;
-            }
-            printf("Cantidad de colores Elim Garak: %u\n", Delta(G));
+            GarakOk(G, orden);
         }
+        resetearColoreo(G);
+        GreedyOk(G, orden);
+        // printf("Delta parcial del reordenamiento %d de 500: %u\n", i, Delta(G));
     }
-
-    printf("\n\n\nCantidad de colores final: %u\n\n\n", Delta(G));
+    printf("\n\n\nDelta final: %u\n\n\n", Delta(G));
 
     // Tiempos finales y liberacion de memoria
     final = clock();
@@ -170,7 +182,7 @@ int main(void) {
 
     DestruirGrafo(G);
     for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < NumeroDeVertices(G); j++) {
+        for (int j = 0; j < numVert; j++) {
             free(coloreosOrdenamientos[i][j]);
         }
     }
