@@ -83,18 +83,20 @@ bool verificaOrden(u32 *Orden, u32 n) {
     //printf("Verificando orden\n");
     
     for (u32 i = 0; i < n; ++i) {
-        //printf("Ver. Or. - Dentro for \n");
+        // printf("Ver. Or. - Dentro for \n");
         if (Orden[i] > n || verificado[Orden[i]]) {
-            printf("Orden[%u] = %u\n", i, Orden[i]);
-            printf("verificado[%u] = %u  \n",i, verificado[i]);
+            //printf("Orden[%u] = %u\n", i, Orden[i]);
+            //printf("verificado[%u] = %u  \n",i, verificado[i]);
+            printf("Lista de verificados: fallo [\n");
             for(u32 j = 0; j < n; j++){
-                printf("verificado[%u] = %u  ", j, verificado[j]);
+                printf("%u, ", verificado[j]);
             }
-            printf("\n");
+            printf("]\n");
             free(verificado);
             printf("Orden Invalido\n");
             return false;
         }
+
         //printf("Ver. Or. - Mid for \n");
         verificado[Orden[i]] = true;
         //printf("Ver. Or. - Final for \n");
