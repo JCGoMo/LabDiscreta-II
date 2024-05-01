@@ -54,7 +54,7 @@ int compareCantidad(const void *a, const void *b) {
 char GulDukat(Grafo G, u32* Orden) {
     // Paso 1: Crear un array de listas verticesPorColor
     u32 cantColor = 0;
-     printf("GulDukat\n");
+    printf("GulDukat\n");
     for (u32 i = 0; i < NumeroDeVertices(G); ++i) {
         u32 col = Color(i,G);
         if(col > cantColor){
@@ -69,7 +69,7 @@ char GulDukat(Grafo G, u32* Orden) {
         return '1';
     }
     //printf("GulDukat for 2\n");
-    for (u32 i = 1; i < cantColor; ++i) {
+    for (u32 i = 0; i < cantColor; ++i) {
         verticesPorColor[i] = malloc(NumeroDeVertices(G) * sizeof(u32));
         if (verticesPorColor[i] == NULL) {
             return '1';
@@ -78,7 +78,7 @@ char GulDukat(Grafo G, u32* Orden) {
     }   // Puede hacerse un realloc y si la cantidad de memoria usada es demasiado grande
 
     // Paso 2: Llenar verticesPorColor
-    //printf("GulDukat for 3 - %u\n", Color(0, G));
+    //printf("GulDukat for 3 - %u, numVert = %u\n", Color(0, G), NumeroDeVertices(G));
     for (u32 i = 0; i < NumeroDeVertices(G); ++i) {
         //printf("GulDukat for 3 anidado - i : %u\n", i);
         //printf("Cant vertices: %u\n", NumeroDeVertices(G));
@@ -104,7 +104,7 @@ char GulDukat(Grafo G, u32* Orden) {
     if (divisibleBy4 == NULL || evenNotDivisibleBy4 == NULL || odd == NULL) {
         return '1';
     }
-    // printf("GulDukat for 4\n");
+     //printf("GulDukat for 4\n");
     u32 index4 = 0;
     u32 indexEvenNot4 = 0;
     u32 indexOdd = 0;
@@ -157,7 +157,7 @@ char GulDukat(Grafo G, u32* Orden) {
     // Paso 6 y 7: Llenar el array Orden
     // Los for anidados no generan complejidad O(n^2) porque la suma de los tamaños de las listas es n
     u32 index = 0;
-    // printf("GulDukat for 6\n");
+    //printf("GulDukat for 6\n");
     for (u32 i = 0; i < index4; ++i) {
         //printf("GulDukat for 7 - anidado 1\n");
         u32 colorDiv4 = divisibleBy4[i].color;
@@ -168,7 +168,7 @@ char GulDukat(Grafo G, u32* Orden) {
         }
         
     }
-    // printf("GulDukat for 8\n");
+    //printf("GulDukat for 8\n");
     for (u32 i = 0; i < indexEvenNot4; ++i) {
         u32 colorNotDiv4 = evenNotDivisibleBy4[i].color;
         //printf("GulDukat for 9- anidado 1\n");
@@ -189,8 +189,8 @@ char GulDukat(Grafo G, u32* Orden) {
     }
 
     // Liberar la memoria
-    // printf("GulDukat for free vertices\n");
-    for(u32 i = 1; i < cantColor; ++i) {
+    //printf("GulDukat for free vertices\n");
+    for(u32 i = 0; i < cantColor; ++i) {
         //printf("GulDukat for free vertices anidado\n");
         free(verticesPorColor[i]);
     }
@@ -206,7 +206,6 @@ char ElimGarak(Grafo G, u32* Orden) {
     printf("ElimGarak \n");
     u32 n = NumeroDeVertices(G);
     u32 cantColor = 0;
-
     for (u32 i = 0; i < n; ++i) {
         u32 col = Color(i,G);
         if(col > cantColor){
