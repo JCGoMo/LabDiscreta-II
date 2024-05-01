@@ -79,25 +79,42 @@ bool verificaOrden(u32 *Orden, u32 n) {
     if (verificado == NULL) {
         return false;
     }
-
+    // printf("n = %u\n", n);
     //printf("Verificando orden\n");
-    for (u32 i = 1; i <= n; ++i) {
+    
+    for (u32 i = 0; i < n; ++i) {
         //printf("Ver. Or. - Dentro for \n");
-        if (Orden[i-1] >= n || verificado[Orden[i-1]]) {
+        if (Orden[i] > n || verificado[Orden[i]]) {
+            printf("Orden[%u] = %u\n", i, Orden[i]);
+            printf("verificado[%u] = %u  \n",i, verificado[i]);
+            for(u32 j = 0; j < n; j++){
+                printf("verificado[%u] = %u  ", j, verificado[j]);
+            }
+            printf("\n");
             free(verificado);
             printf("Orden Invalido\n");
             return false;
         }
         //printf("Ver. Or. - Mid for \n");
-        verificado[Orden[i-1]] = true;
+        verificado[Orden[i]] = true;
         //printf("Ver. Or. - Final for \n");
+        /*
+        [0, 7, 1, 6, 2, 5, 3, 4 ]
+        [F, F, F, F, F, F, F, F ]
+        
+        i = 7, orden[i] = 4 n = 8
+        verificado[orden[i]] = 
+        [t, t, t, t, t, t, t, t ]
+        
+
+        */
     }
 
     free(verificado);
     return true;
 }
 
-u32 Greedy(Grafo G,u32* Orden){
+u32 Greedy(Grafo G,u32* Orden) {
     //printf("Entro a greedy\n");
     u32 numVertices = NumeroDeVertices(G);
     u32 resultado = 0;
@@ -112,12 +129,15 @@ u32 Greedy(Grafo G,u32* Orden){
         free(maxColor);
         return MAX_U32;
     }
+    // Reseteo de coloreo
+    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
+        AsignarColor(0, i, G);
+    }
     //printf("Orden verificado\n");
     for (u32 i = 0; i < numVertices; i++) {
         //printf("Inicio pintado de vertice %u\n", i);
         pintarVertice(G, Orden[i], maxColor);
     }
-    
     resultado = *maxColor;
     free(maxColor);
     return resultado;

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 
 #include "API2024Parte2.h"
@@ -21,21 +22,21 @@ typedef struct {
 void DulkatOk (Grafo G, u32 *orden) {
     if (GulDukat(G, orden) == '1') {
         printf("Error en GulDukat\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 }
 
 void GarakOk (Grafo G, u32 *orden) {
     if (ElimGarak(G, orden) == '1') {
         printf("Error en ElimGarak\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 }
 
 void GreedyOk (Grafo G, u32 *orden) {
     if (Greedy(G, orden) == MAX_U32){
         printf("Error en Greedy orden natural\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -46,35 +47,47 @@ void resetearColoreo(Grafo G){
 }
 
 void iteracionColoreos(Grafo G, u32 *orden, color *coloreosOrdenamientos[5], int j, ColoreoFinal coloreosFinales) {
-    for (int i = 0; i < 100; i = i+2) {
+    for (int i = 0; i < 10; i = i+2) {
+        // sleep(1);
         DulkatOk(G, orden);
-        resetearColoreo(G);
         GreedyOk(G, orden);
-        ExtraerColores(G, coloreosOrdenamientos[j][i]);
+        ExtraerColores(G, &coloreosOrdenamientos[j][i]);
         // printf("Delta parcial del coloreo Dulkat n %d del ordenamiento %d: %u\n", i, j, Delta(G));
-
+        //  sleep(1);
         GarakOk(G, orden);
         resetearColoreo(G);
         GreedyOk(G, orden);
-        ExtraerColores(G, coloreosOrdenamientos[j][i+1]);
+        ExtraerColores(G, &coloreosOrdenamientos[j][i+1]);
         // printf("Delta parcial del coloreo Garak n %d del ordenamiento %d: %u\n", i, j, Delta(G));
     }
-    ExtraerColores(G, coloreosFinales.coloreo[j]);
+    ExtraerColores(G, &coloreosFinales.coloreo[j]);
     coloreosFinales.cantidadColores[j] = Delta(G);
     printf("Delta final del ordenamiento %d: %u\n", j, coloreosFinales.cantidadColores[j]);
 }
 
-u32 compararGrado(const void *a, const void *b) {
+int compararGrado(const void *a, const void *b) {
     const VerticeGrado *verticeA = (const VerticeGrado *)a;
     const VerticeGrado *verticeB = (const VerticeGrado *)b;
     return verticeB->grado - verticeA->grado;
+}
+
+int compare(const void *a, const void *b) {
+    int num1 = *(int*)a;
+    int num2 = *(int*)b;
+
+    if (num1 % 2 == 0 && num2 % 2 == 0) {
+        return num2 - num1;
+    } else if (num1 % 2 != 0 && num2 % 2 != 0) {
+        return num1 - num2;
+    } else {
+        return (num1 % 2 == 0) ? -1 : 1;
+    }
 }
 
 int main(void) {
 
     clock_t inicio, final;
     long span;
-    u32 error = 0;
     inicio = clock();
     Grafo G = ConstruirGrafo();
     if(G == NULL){
@@ -110,15 +123,22 @@ int main(void) {
     iteracionColoreos(G, orden, coloreosOrdenamientos, 1, coloreosFinales);
 
     // Ordenamiento inicial: pares decreciente, luego impares creciente
-    int index = 0;                                                          
-    for (u32 i = numVert - 1 - ((numVert-1) % 2 != 0); i >= 0; i = i-2) {               // Pares decreciente              
+    int index = 0;
+    //printf("Orden pares decrecientes: [");                                                          
+    for (u32 i = numVert - 1 - ((numVert-1) % 2 != 0); (int)i >= 0 ; i = i-2) {               // Pares decreciente              
+        orden[index] = (u32)i;
+        index++;
+        //printf("%u, ", i);
+    }
+    //printf("]\n");
+    //printf("Orden impares creciente: [");
+    for (u32 i = 1; i <= numVert - 1 - ((numVert-1) % 2 == 0); i = i+2) {                // Impares creciente
         orden[index] = i;
         index++;
+        printf("%u, ", i);
+        
     }
-    for (u32 i = 1; i < numVert - 1 - ((numVert-1) % 2 == 0); i = i+2) {                // Impares creciente
-        orden[index] = i;
-        index++;
-    }
+    //printf("]\n");
     GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 2, coloreosFinales);
 
@@ -128,7 +148,8 @@ int main(void) {
         vertices[i].numeroVertice = i;
         vertices[i].grado = Grado(i, G);
     }
-    qsort(vertices, numVert, sizeof(VerticeGrado), compararGrado);
+
+    qsort(&vertices, numVert, sizeof(VerticeGrado), compare);
     for (u32 i = 0; i < numVert; i++) {
         orden[i] = vertices[i].numeroVertice;
     }
@@ -137,13 +158,18 @@ int main(void) {
     
     // Ordenamiento inicial: 0, n, 1, n-1, 2, n-2, ...
     u32 mitad = numVert / 2;
+    printf("Orden intercalado: ["); 
     for (u32 i = 0; i < mitad; i++) {
         orden[i] = i;
         orden[i + 1] = numVert - i - 1;
+        printf("%u, %u, ", orden[i], orden[i + 1]);
     }
     if (numVert % 2 != 0) {
         orden[numVert - 1] = mitad;
+        printf("%u", orden[numVert - 1]);
     }
+    printf("]\n");
+
     GreedyOk(G, orden);
     iteracionColoreos(G, orden, coloreosOrdenamientos, 4, coloreosFinales);
 
@@ -156,13 +182,13 @@ int main(void) {
             mejorColoreo = i;
         }
     }
-    ImportarColores(G, coloreosFinales.coloreo[mejorColoreo]);
+    ImportarColores(&coloreosFinales.coloreo[mejorColoreo], G);
     printf("Mejor delta de los 5 ordenamientos: %u\n", coloreosFinales.cantidadColores[mejorColoreo]);
 
-    for (int i = 0 ; i < 500 ; i++) {
+    for (int i = 0 ; i < 5 ; i++) {
         srand(time(NULL));
         int random_number = rand() % 2;
-
+        // sleep(1);
         if (random_number) {
             DulkatOk(G, orden);
         }
@@ -182,9 +208,7 @@ int main(void) {
 
     DestruirGrafo(G);
     for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < numVert; j++) {
-            free(coloreosOrdenamientos[i][j]);
-        }
+        free(coloreosOrdenamientos[i]);
     }
 
     return 0;

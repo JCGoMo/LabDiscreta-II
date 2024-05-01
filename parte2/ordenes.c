@@ -54,7 +54,7 @@ int compareCantidad(const void *a, const void *b) {
 char GulDukat(Grafo G, u32* Orden) {
     // Paso 1: Crear un array de listas verticesPorColor
     u32 cantColor = 0;
-     printf("GulDukat for 1\n");
+     printf("GulDukat\n");
     for (u32 i = 0; i < NumeroDeVertices(G); ++i) {
         u32 col = Color(i,G);
         if(col > cantColor){
@@ -68,7 +68,7 @@ char GulDukat(Grafo G, u32* Orden) {
     if (verticesPorColor == NULL) {
         return '1';
     }
-    printf("GulDukat for 2\n");
+    //printf("GulDukat for 2\n");
     for (u32 i = 1; i < cantColor; ++i) {
         verticesPorColor[i] = malloc(NumeroDeVertices(G) * sizeof(u32));
         if (verticesPorColor[i] == NULL) {
@@ -78,7 +78,7 @@ char GulDukat(Grafo G, u32* Orden) {
     }   // Puede hacerse un realloc y si la cantidad de memoria usada es demasiado grande
 
     // Paso 2: Llenar verticesPorColor
-    printf("GulDukat for 3 - %u\n", Color(0, G));
+    //printf("GulDukat for 3 - %u\n", Color(0, G));
     for (u32 i = 0; i < NumeroDeVertices(G); ++i) {
         //printf("GulDukat for 3 anidado - i : %u\n", i);
         //printf("Cant vertices: %u\n", NumeroDeVertices(G));
@@ -90,6 +90,12 @@ char GulDukat(Grafo G, u32* Orden) {
         verticesPorColor[col][verticesPorColor[col][0]] = i;  // Agregar el vértice a la lista
     }   // verticesPorColor [Color][        3          , 0 , 3, 4 ]
         //                          contador del color  vertices de ese color
+    for (u32 i = 1; i < cantColor; i++)
+    {
+        verticesPorColor[i] = realloc(verticesPorColor[i], (verticesPorColor[i][0] + 1) * sizeof(u32));
+    }
+    
+    
     // printf("GulDukat entre 3 - 4\n");
     // Pasos 3 y 4: Crear y llenar las listas de colores
     ColorInfo *divisibleBy4 = malloc(cantColor * sizeof(ColorInfo));
@@ -98,7 +104,7 @@ char GulDukat(Grafo G, u32* Orden) {
     if (divisibleBy4 == NULL || evenNotDivisibleBy4 == NULL || odd == NULL) {
         return '1';
     }
-     printf("GulDukat for 4\n");
+    // printf("GulDukat for 4\n");
     u32 index4 = 0;
     u32 indexEvenNot4 = 0;
     u32 indexOdd = 0;
@@ -151,7 +157,7 @@ char GulDukat(Grafo G, u32* Orden) {
     // Paso 6 y 7: Llenar el array Orden
     // Los for anidados no generan complejidad O(n^2) porque la suma de los tamaños de las listas es n
     u32 index = 0;
-    printf("GulDukat for 6\n");
+    // printf("GulDukat for 6\n");
     for (u32 i = 0; i < index4; ++i) {
         //printf("GulDukat for 7 - anidado 1\n");
         u32 colorDiv4 = divisibleBy4[i].color;
@@ -162,7 +168,7 @@ char GulDukat(Grafo G, u32* Orden) {
         }
         
     }
-    printf("GulDukat for 8\n");
+    // printf("GulDukat for 8\n");
     for (u32 i = 0; i < indexEvenNot4; ++i) {
         u32 colorNotDiv4 = evenNotDivisibleBy4[i].color;
         //printf("GulDukat for 9- anidado 1\n");
@@ -172,7 +178,7 @@ char GulDukat(Grafo G, u32* Orden) {
             Orden[index++] = verticesPorColor[colorNotDiv4][j];
         }
     }
-    printf("GulDukat for 10\n");
+    //printf("GulDukat for 10\n");
     for (u32 i = 0; i < indexOdd; ++i) {
         //printf("GulDukat for 11 - anidado 1\n");
         u32 colorOdd = odd[i].color;
@@ -183,7 +189,7 @@ char GulDukat(Grafo G, u32* Orden) {
     }
 
     // Liberar la memoria
-    printf("GulDukat for free vertices\n");
+    // printf("GulDukat for free vertices\n");
     for(u32 i = 1; i < cantColor; ++i) {
         //printf("GulDukat for free vertices anidado\n");
         free(verticesPorColor[i]);
@@ -197,7 +203,7 @@ char GulDukat(Grafo G, u32* Orden) {
 }
 
 char ElimGarak(Grafo G, u32* Orden) {
-    //printf("ElimGarak \n");
+    printf("ElimGarak \n");
     u32 n = NumeroDeVertices(G);
     u32 cantColor = 0;
 
@@ -209,6 +215,7 @@ char ElimGarak(Grafo G, u32* Orden) {
     }
     //printf("ElimGarak 1\n");
     cantColor++;
+    //printf("CantColor: %u\n", cantColor);
     // Tiene los colores de menos presentas a más presentes
     ColorCantidad *presenciaColores = malloc(cantColor * sizeof(ColorCantidad));
     if (presenciaColores == NULL) {
@@ -238,33 +245,61 @@ char ElimGarak(Grafo G, u32* Orden) {
         verticesPorColorElim[col][verticesPorColorElim[col][0]] = i;  // Agregar el vértice a la lista
     }
 
-    
+    for (u32 i = 0; i < cantColor; i++)
+    {   
+        verticesPorColorElim[i] = realloc(verticesPorColorElim[i], (verticesPorColorElim[i][0] + 1) * sizeof(u32));
+    }
     // printf("ElimGarak 3 for 2\n");
-    for(u32 i = 1; i < cantColor; i++){ // inicializado en 1
+    for(u32 i = 0; i < cantColor; i++){ // inicializado en 1, cantColor ya es +1
         presenciaColores[i].color = i;
+        //printf("i = %u\n", i);
+        //printf("presenciaColores[i].color = %u\n", presenciaColores[i].color);
         presenciaColores[i].cantidad = verticesPorColorElim[i][0];
+        //printf("verticesPorColorElim[i][0] = %u\n", verticesPorColorElim[i][0]);
+        //printf("presenciaColores[i].cantidad = %u\n", presenciaColores[i].cantidad);
+        
         //printf("verticesPorColorElim[i][0] = %u  i = %u\n", verticesPorColorElim[i][0], i);
         //printf("presenciaColores[i].color = %u\n", presenciaColores[i].color);
         
     }
     //printf("presenciaColores[3].cantidad = %u\n", presenciaColores[3].cantidad);
     //printf("ElimGarak 4 qsort\n");
+    //printf("Presencia Col pre sort: [");
+    //for(u32 i = 0; i < cantColor; i++){
+    //    printf(" (Color %u; ", presenciaColores[i].color);
+    //    printf(" Cantidad %u), ", presenciaColores[i].cantidad);
+    //}
+    //printf("]\n");
     qsort(presenciaColores, cantColor, sizeof(ColorCantidad), compareCantidad);
+    //printf("Presencia Col Post Sort: [");
+    //for(u32 i = 0; i < cantColor; i++){
+    //    printf(" (Color %u; ", presenciaColores[i].color);
+    //    printf(" Cantidad %u), ", presenciaColores[i].cantidad);
+    //}
+    //printf("]\n");
     //printf("\n\nCantColor: %u\n\n", cantColor);
     int contador = 0;
     //printf("ElimGarak 5 for 3\n");
-    for(u32 i = 1; i < cantColor; i++){ // inicializado en 1
+    for(u32 i = 1; i < cantColor; i++){ // inicializado en 1, cantColor ya es +1
         //printf("ElimGarak 5 for 3 anidado 1\n");
-        for(u32 j = 1; j <= presenciaColores[i-1].cantidad; j++){
-            printf("i = %u, j = %u,  ColPresencia = %u \n", i, j, presenciaColores[i].color);
-            Orden[contador] = verticesPorColorElim[presenciaColores[i-1].color][j];
-            printf("verticesPorColorElim[presenciaColores[i-1].color][j] = %u\n", verticesPorColorElim[presenciaColores[i-1].color][j]);
+        for(u32 j = 1; j <= presenciaColores[i].cantidad; j++){
+            //printf("i = %u, j = %u,  ColPresencia = %u \n", i, j, presenciaColores[i].color);
+            Orden[contador] = verticesPorColorElim[presenciaColores[i].color][j];
+            // printf("verticesPorColorElim[presenciaColores[i].color][j] = %u\n", verticesPorColorElim[presenciaColores[i].color][j]);
+            // printf("Contador = %u\n", contador);
+            // printf("Orden[contador] = %u\n", Orden[contador]);
             contador++;
+            
         }
     }
 
     //printf("ElimGarak FIN\n");
+    for(u32 i = 0; i < cantColor; ++i) {
+        //printf("GulDukat for free vertices anidado\n");
+        free(verticesPorColorElim[i]);
+    }
     free(verticesPorColorElim);
+    //free(verticesPorColorElim);
     free(presenciaColores);
     
     return '0';

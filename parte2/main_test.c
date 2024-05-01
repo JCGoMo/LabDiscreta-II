@@ -18,17 +18,10 @@ void printGrafo(Grafo G)
     // }
     // printf("Delta: %u \n",G->delta);
 
-    for(u32 i = 0; i < 10; i++){
+    for(u32 i = 0; i < NumeroDeVertices(G); i++){
         printf(" (V %u : C%u) ", i, Color(i,G));
     }
     printf("\n");
-}
-
-void resetearColoreo(Grafo G){
-    for(u32 i = 0; i < NumeroDeVertices(G); i++){
-        AsignarColor(0, i, G);
-        //printf(" (V %u : C%u) \n", i, Color(i,G));
-    }
 }
 
 int main(void) {
@@ -65,6 +58,16 @@ int main(void) {
         printGrafo(G);
     }
     finalNatural = clock();
+
+    u32 cantColor = 0;
+    // printf("GulDukat for 1\n");
+    for (u32 i = 0; i < NumeroDeVertices(G); ++i) {
+        u32 col = Color(i,G);
+        if(col > cantColor){
+            cantColor = col ;
+        }
+    }
+    cantColor++;
     
     span = (finalNatural - inicioNatural) / CLOCKS_PER_SEC;
     printf("Tiempo orden inicial: %lu\n", span);
@@ -83,7 +86,6 @@ int main(void) {
     // }
     // printf("\n");
     printf("Coloreo con orden GulDukat:\n");
-    resetearColoreo(G);
     if (Greedy(G, orden) != MAX_U32){
         printGrafo(G);
     }
@@ -99,12 +101,11 @@ int main(void) {
         return 1;
     }
     printf("Orden Elim: ");
-    for(u32 i = 0; i < 30; i++){
+    for(u32 i = 0; i < NumeroDeVertices(G); i++){
         printf(" %u, ", orden[i]);
     }
     printf("\n");
     printf("Coloreo con orden ElimGarak:\n");
-    resetearColoreo(G);
     if (Greedy(G, orden) == MAX_U32){
         printf("Error en Greedy orden natural\n");
         return 1;
