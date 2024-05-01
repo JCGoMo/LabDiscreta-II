@@ -119,9 +119,17 @@ int main(void) {
     // Ordenamiento inicial: naturales inverso
     
     for (int i = (int)NumeroDeVertices(G)-1; i >= 0; i--) {    
+        // orden[index] = (u32)i;
+        // index++;
+        // printf("Index %d", index);
+        if ((u32)index < NumeroDeVertices(G)) {
         orden[index] = (u32)i;
         index++;
-        printf("Index %d", index);
+        //printf("Index %d", index);
+        } else {
+        printf("Error: index out of bounds\n");
+        break;
+    }
         
     }
     printf("2do orden");
@@ -145,7 +153,7 @@ int main(void) {
     for (u32 i = 1; i <= NumeroDeVertices(G) - 1 - ((NumeroDeVertices(G)-1) % 2 == 0); i = i+2) {                // Impares creciente
         orden[index] = i;
         index++;
-        printf("%u, ", i);
+        // printf("%u, ", i);
         
     }
     //printf("]\n");
@@ -202,11 +210,11 @@ int main(void) {
         }
     }
     //////...///////
-    printf("Orden: [");
-    for (u32 i = 0; i < NumeroDeVertices(G); i++) {
-        printf("%u, ", orden[i]);
-    }
-    printf("]\n");
+    // printf("Orden: [");
+    // for (u32 i = 0; i < NumeroDeVertices(G); i++) {
+    //     printf("%u, ", orden[i]);
+    // }
+    // printf("]\n");
 
     GreedyOk(G, orden);
     iteracionColoreos(G, orden, /*coloreosOrdenamientos,*/ 4, coloreosFinales);
@@ -225,7 +233,7 @@ int main(void) {
         }
     }
     ImportarColores(&coloreosFinales.coloreo[mejorColoreo], G);
-    printf("Mejor delta de los 5 ordenamientos: %u\n", coloreosFinales.cantidadColores[mejorColoreo]);
+    printf("Mejor ordenamiento: %u\n", coloreosFinales.cantidadColores[mejorColoreo]);
 
     // printf("Orden Pre Pre reorder: [");
     //     for (u32 i = 0; i < NumeroDeVertices(G); i++) {
@@ -233,9 +241,10 @@ int main(void) {
     //     }
     // printf("]\n");
 
+    srand(time(NULL));
     for (int i = 0 ; i < 50 ; i++) {
-        srand(time(NULL));
         int random_number = rand() % 2;
+        // printf("Random number: %d\n", random_number);
         // sleep(1);
         
         // printf("Orden Pre reorder: [");
@@ -257,7 +266,7 @@ int main(void) {
         //    printf("%u, ", orden[i]);
         //}
         //printf("]\n");
-        printf("\nDelta final: %u\n", Delta(G));
+        // printf("\nDelta final: %u\n", Delta(G));
         GreedyOk(G, orden);
         // printf("Delta parcial del reordenamiento %d de 500: %u\n", i, Delta(G));
     }
